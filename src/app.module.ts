@@ -27,7 +27,6 @@ import configuration from './db/db.configuration';
         POSTGRES_DB: Joi.string().required(),
       }),
       validationOptions: {
-        allowUnknown: false,
         abortEarly: true,
       },
       load: [configuration],
