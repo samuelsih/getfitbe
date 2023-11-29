@@ -33,6 +33,7 @@
     "dotenv": "^16.3.1",
     "helmet": "^7.1.0",
     "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
     "kysely": "^0.26.3",
     "kysely-codegen": "^0.11.0",
     "nest-winston": "^1.9.4",

@@ -34,6 +34,7 @@ async function bootstrap() {
     .setTitle('Getfit API')
     .setDescription('The Getfit API playground')
     .setVersion('1.0.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

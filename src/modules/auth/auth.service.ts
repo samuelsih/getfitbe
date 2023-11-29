@@ -28,10 +28,19 @@ export class AuthService {
   }
 
   async generateJWT(payload: LoginResultDTO) {
-    const token = await this.jwtService.signAsync(payload, {
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: '1h',
       audience: payload.id,
       issuer: this.configService.get('JWT_ISSUER'),
     });
-    return token;
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get('JWT_REFRESH'),
+      expiresIn: '7d',
+      audience: payload.id,
+      issuer: this.configService.get('JWT_ISSUER'),
+    });
+    return { accessToken, refreshToken };
   }
 }

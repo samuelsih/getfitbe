@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from '#/domain/auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import Joi from 'joi';
 import { KyselyModule } from 'nestjs-kysely';
@@ -7,6 +6,7 @@ import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import { WinstonModule } from 'nest-winston';
 import { setupLogger } from '#/logger/logger';
+import { AuthModule } from '#/modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,7 +20,9 @@ import { setupLogger } from '#/logger/logger';
         POSTGRES_DB: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_ISSUER: Joi.string().required(),
+        JWT_REFRESH: Joi.string().required(),
         APP_PORT: Joi.number().required(),
+        ENVIRONMENT: Joi.string().default('PROD'),
       }),
       validationOptions: {
         abortEarly: true,

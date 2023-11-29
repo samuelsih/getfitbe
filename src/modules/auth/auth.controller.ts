@@ -1,9 +1,19 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterRequestDTO } from './dto/register.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { LoginRequestDTO } from './dto/login.dto';
 import { BaseResponse } from '#/response/base';
+import { JwtGuard } from '#/guard/jwt.guard';
+import { Request } from 'express';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -24,6 +34,13 @@ export class AuthController {
     const user = await this.authService.getUser(dto);
     const jwt = await this.authService.generateJWT(user);
 
-    return new BaseResponse(200, 'OK', { user, accessToken: jwt });
+    return new BaseResponse(200, 'OK', { user, jwt });
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/me')
+  @ApiBearerAuth()
+  async whoami(@Req() request: Request) {
+    return new BaseResponse(200, 'OK', request['user'] || request['trainer']);
   }
 }
