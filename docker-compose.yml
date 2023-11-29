@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+  api:
+    container_name: api
+    depends_on:
+      - postgres
+      - minio
+    ports:
+      - 5000:5000
+    build: .
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file: .env
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -15,6 +28,7 @@ services:
       - ./scripts:/docker-entrypoint-initdb.d/
 
   minio:
+      container_name: minio
       image: minio/minio
       ports:
         - "9000:9000"
