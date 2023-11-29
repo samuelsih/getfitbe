@@ -2,6 +2,7 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
   Inject,
   LoggerService,
 } from '@nestjs/common';
@@ -21,6 +22,14 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
+
+    const status = exception as HttpException;
+    if (status.getStatus() === 404) {
+      return res.status(404).send({
+        code: 404,
+        message: 'Not found',
+      });
+    }
 
     switch (true) {
       case isCustomError(exception):
