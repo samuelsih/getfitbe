@@ -23,4 +23,5 @@ jobs:
             git pull
             npm install
             sudo docker compose down -v
+            sudo docker rmi $(sudo docker images -q getfitbe-api)
             sudo docker compose up -d
