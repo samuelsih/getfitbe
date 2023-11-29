@@ -5,6 +5,8 @@ import Joi from 'joi';
 import { KyselyModule } from 'nestjs-kysely';
 import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
+import { WinstonModule } from 'nest-winston';
+import { setupLogger } from '#/logger/logger';
 
 @Module({
   imports: [
@@ -24,6 +26,19 @@ import { Pool } from 'pg';
         abortEarly: true,
       },
     }),
+    WinstonModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const logger = setupLogger(
+          configService.get('ENVIRONMENT'),
+          'getfit-api',
+          configService.get('TELEGRAM_TOKEN'),
+          configService.get('TELEGRAM_CHANNEL'),
+        );
+
+        return logger;
+      },
+    }),
     KyselyModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -35,14 +50,6 @@ import { Pool } from 'pg';
             password: configService.get('POSTGRES_PASSWORD'),
             database: configService.get('POSTGRES_DB'),
           }),
-        });
-
-        console.table({
-          host: configService.get('POSTGRES_HOST'),
-          port: configService.get('POSTGRES_PORT'),
-          user: configService.get('POSTGRES_USER'),
-          password: configService.get('POSTGRES_PASSWORD'),
-          database: configService.get('POSTGRES_DB'),
         });
 
         return { dialect };

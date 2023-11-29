@@ -1,7 +1,7 @@
 export interface CustomError {
-  code: () => number;
+  statusCode: () => number;
 }
 
 export const isCustomError = (obj: any): obj is CustomError => {
-  return 'code' in obj;
+  return 'statusCode' in obj;
 };
