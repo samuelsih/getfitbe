@@ -1,11 +1,7 @@
-import { CustomError } from './customError.interface';
+import { HttpException } from '@nestjs/common';
 
-export class InvalidCredentialsError extends Error implements CustomError {
-  constructor(user: string) {
-    super(`Invalid credentials for ${user}`);
-  }
-
-  public statusCode() {
-    return 400;
+export class InvalidCredentialsError extends HttpException {
+  constructor(item: string) {
+    super(`Invalid credentials for ${item}`, 400);
   }
 }

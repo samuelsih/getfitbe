@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { AuthRepository } from './auth.repository';
+import { ImageService } from './image.service';
+import { ImageController } from './image.controller';
+import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
-  controllers: [AuthController],
-  providers: [AuthService, AuthRepository],
+  providers: [ImageService],
+  controllers: [ImageController],
+  exports: [ImageService],
   imports: [
     NestjsFormDataModule.config({ storage: MemoryStoredFile }),
     JwtModule.registerAsync({
@@ -22,4 +22,4 @@ import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
     }),
   ],
 })
-export class AuthModule {}
+export class ImageModule {}

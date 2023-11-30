@@ -6,13 +6,11 @@ export const customValidationPipe = new ValidationPipe({
   whitelist: true,
   forbidNonWhitelisted: true,
   exceptionFactory(errors: ValidationError[] = []) {
-    return new UnprocessableEntityException({
-      code: 422,
-      message: 'Failed validation',
-      data: errors.map((error) => ({
+    return new UnprocessableEntityException(
+      errors.map((error) => ({
         field: error.property,
         error: Object.values(error.constraints),
       })),
-    });
+    );
   },
 });

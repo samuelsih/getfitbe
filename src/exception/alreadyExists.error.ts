@@ -1,11 +1,7 @@
-import { CustomError } from './customError.interface';
+import { HttpException } from '@nestjs/common';
 
-export class AlreadyExistsError extends Error implements CustomError {
+export class AlreadyExistsError extends HttpException {
   constructor(item: string) {
-    super(`${item} already exists`);
-  }
-
-  public statusCode() {
-    return 400;
+    super(`${item} already exists`, 400);
   }
 }

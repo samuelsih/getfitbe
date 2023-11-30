@@ -2,12 +2,29 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
+  HttpStatus,
   Inject,
   LoggerService,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { isCustomError } from './customError.interface';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+
+export interface ValidationError {
+  message: Message[];
+  error: string;
+  statusCode: number;
+}
+
+export interface Message {
+  field: string;
+  error: string[];
+}
+
+export interface GenericHTTPResponse {
+  message: string;
+  statusCode: number;
+}
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -16,18 +33,37 @@ export class AllExceptionFilter implements ExceptionFilter {
     private readonly logger: LoggerService,
   ) {}
 
-  catch(exception: Error, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    this.logger.debug(exception);
+
     const { message, stack } = exception;
 
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
+    const code = exception.getStatus();
 
-    switch (true) {
-      case isCustomError(exception):
-        this.logger.verbose(message);
-        return res.status(exception.statusCode()).send({
-          code: exception.statusCode(),
-          message,
+    switch (code) {
+      case HttpStatus.UNPROCESSABLE_ENTITY:
+        const validationErrors = exception.getResponse() as ValidationError;
+
+        return res.status(code).send({
+          code,
+          message: 'Failed validation',
+          data: validationErrors.message,
+        });
+
+      case HttpStatus.UNAUTHORIZED:
+        const unauthorizedError =
+          exception.getResponse() as GenericHTTPResponse;
+        return res.status(code).send({
+          code,
+          message: unauthorizedError.message,
+        });
+
+      case HttpStatus.BAD_REQUEST:
+        return res.status(code).send({
+          code,
+          message: exception.getResponse(),
         });
 
       default:

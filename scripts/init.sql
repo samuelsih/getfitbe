@@ -30,4 +30,12 @@ BEFORE UPDATE
   ON users FOR EACH ROW
 EXECUTE
   PROCEDURE update_updated_at_column();
+
+CREATE TABLE user_upload_img (
+	id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  img_url text NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT 'now'::timestamp,
+  CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
+);
   

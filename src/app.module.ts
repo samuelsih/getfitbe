@@ -7,6 +7,8 @@ import { Pool } from 'pg';
 import { WinstonModule } from 'nest-winston';
 import { setupLogger } from '#/logger/logger';
 import { AuthModule } from '#/modules/auth/auth.module';
+import { MinioModule } from 'nestjs-minio-client';
+import { ImageModule } from './modules/image/image.module';
 
 @Module({
   imports: [
@@ -23,6 +25,11 @@ import { AuthModule } from '#/modules/auth/auth.module';
         JWT_REFRESH: Joi.string().required(),
         APP_PORT: Joi.number().required(),
         ENVIRONMENT: Joi.string().default('PROD'),
+        MINIO_ENDPOINT: Joi.string().required(),
+        MINIO_PORT: Joi.number().required(),
+        MINIO_ACCESS_KEY: Joi.string().required(),
+        MINIO_SECRET_KEY: Joi.string().required(),
+        MINIO_BUCKET_IMG: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: true,
@@ -57,7 +64,21 @@ import { AuthModule } from '#/modules/auth/auth.module';
         return { dialect };
       },
     }),
+    MinioModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          endPoint: configService.get('MINIO_ENDPOINT'),
+          port: configService.get<number>('MINIO_PORT'),
+          useSSL: false,
+          accessKey: configService.get('MINIO_ACCESS_KEY'),
+          secretKey: configService.get('MINIO_SECRET_KEY'),
+        };
+      },
+    }),
     AuthModule,
+    ImageModule,
   ],
 })
 export class AppModule {}

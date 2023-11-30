@@ -1,9 +1,9 @@
-import { UnauthorizedError } from '#/exception/unauthorized.error';
 import {
   CanActivate,
   ExecutionContext,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -24,7 +24,7 @@ export class JwtGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.getTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedException();
     }
 
     try {
@@ -36,7 +36,7 @@ export class JwtGuard implements CanActivate {
       this.logger.debug({ payload });
 
       if (!payload) {
-        throw new UnauthorizedError();
+        throw new UnauthorizedException();
       }
 
       const guest = this.excludeAdditionalJWTPayload(payload) as Guest;
@@ -49,10 +49,10 @@ export class JwtGuard implements CanActivate {
         return true;
       }
 
-      throw new UnauthorizedError();
+      throw new UnauthorizedException();
     } catch (error) {
       this.logger.debug('error jwt:', error);
-      throw new UnauthorizedError();
+      throw new UnauthorizedException();
     }
   }
 
