@@ -16,6 +16,25 @@ CREATE TABLE
     updated_at TIMESTAMPTZ DEFAULT 'now'::timestamp
   );
 
+CREATE TABLE conversations (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),,
+  user_id uuid NOT NULL,
+  trainer_id uuid NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT 'now'::timestamp,
+  CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES users(id),
+  CONSTRAINT fk_trainer_id FOREIGN KEY(trainer_id) REFERENCES users(id)
+);
+
+CREATE TABLE messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id uuid NOT NULL,
+  sender_id uuid NOT NULL,
+  content VARCHAR(500) NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT 'now'::timestamp,
+  CONSTRAINT fk_conversation_id FOREIGN KEY(conversation_id) REFERENCES conversations(id),
+  CONSTRAINT fk_sender_id FOREIGN KEY(sender_id) REFERENCES users(id)
+);
+
 CREATE FUNCTION
   update_updated_at_column() RETURNS trigger LANGUAGE plpgsql AS $$
   BEGIN

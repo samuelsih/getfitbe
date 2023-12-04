@@ -34,7 +34,7 @@ export class AllExceptionFilter implements ExceptionFilter {
   ) {}
 
   catch(exception: HttpException, host: ArgumentsHost) {
-    this.logger.debug(exception);
+    this.logger.debug({ exception: exception });
 
     const { message, stack } = exception;
 
@@ -43,11 +43,17 @@ export class AllExceptionFilter implements ExceptionFilter {
     const code = exception.getStatus();
 
     switch (code) {
+      case HttpStatus.NOT_FOUND:
+        return res.status(code).send({
+          code: code.valueOf(),
+          message: 'Not found',
+        });
+
       case HttpStatus.UNPROCESSABLE_ENTITY:
         const validationErrors = exception.getResponse() as ValidationError;
 
         return res.status(code).send({
-          code,
+          code: code.valueOf(),
           message: 'Failed validation',
           data: validationErrors.message,
         });
@@ -56,13 +62,13 @@ export class AllExceptionFilter implements ExceptionFilter {
         const unauthorizedError =
           exception.getResponse() as GenericHTTPResponse;
         return res.status(code).send({
-          code,
+          code: code,
           message: unauthorizedError.message,
         });
 
       case HttpStatus.BAD_REQUEST:
         return res.status(code).send({
-          code,
+          code: code.valueOf(),
           message: exception.getResponse(),
         });
 
