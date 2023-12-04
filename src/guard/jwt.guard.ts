@@ -40,6 +40,7 @@ export class JwtGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.getTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException();
     }

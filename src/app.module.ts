@@ -10,6 +10,7 @@ import { AuthModule } from '#/modules/auth/auth.module';
 import { MinioModule } from 'nestjs-minio-client';
 import { ImageModule } from './modules/image/image.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -81,6 +82,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot(),
     AuthModule,
     ImageModule,
+    ChatModule,
   ],
 })
 export class AppModule {}
