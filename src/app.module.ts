@@ -9,6 +9,7 @@ import { setupLogger } from '#/logger/logger';
 import { AuthModule } from '#/modules/auth/auth.module';
 import { MinioModule } from 'nestjs-minio-client';
 import { ImageModule } from './modules/image/image.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { ImageModule } from './modules/image/image.module';
         };
       },
     }),
+    EventEmitterModule.forRoot(),
     AuthModule,
     ImageModule,
   ],

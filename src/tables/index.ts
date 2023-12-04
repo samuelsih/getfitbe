@@ -1,14 +1,29 @@
 import type { ColumnType, Kysely } from 'kysely';
 
-type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-type Timestamp = ColumnType<Date, Date | string, Date | string>;
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-type UserRole = 'TRAINER' | 'USER';
+export type UserRole = 'TRAINER' | 'USER';
 
-interface Users {
+export interface Conversations {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  trainer_id: string;
+  user_id: string;
+}
+
+export interface Messages {
+  content: string;
+  conversation_id: string;
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  sender_id: string;
+}
+
+export interface Users {
   created_at: Generated<Timestamp>;
   email: string;
   email_verified: Timestamp | null;
@@ -20,7 +35,9 @@ interface Users {
   updated_at: Generated<Timestamp | null>;
 }
 
-interface Tables {
+export interface Tables {
+  conversations: Conversations;
+  messages: Messages;
   users: Users;
 }
 

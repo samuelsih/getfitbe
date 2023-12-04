@@ -15,18 +15,23 @@ import { BaseResponse } from '#/response/base';
 import { JwtGuard } from '#/guard/jwt.guard';
 import { Request } from 'express';
 import { FormDataRequest } from 'nestjs-form-data';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Controller('auth')
 @ApiTags('Authentication')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private event: EventEmitter2,
+  ) {}
 
   @Post('user/register')
   @FormDataRequest()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterRequestDTO })
   async registerAsUser(@Body() dto: RegisterRequestDTO) {
-    await this.authService.registerUser(dto);
+    const userID = await this.authService.registerUser(dto);
+    this.event.emit('user.registered', userID);
     return new BaseResponse(201, 'Registered');
   }
 

@@ -17,7 +17,7 @@ CREATE TABLE
   );
 
 CREATE TABLE conversations (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   trainer_id uuid NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT 'now'::timestamp,
@@ -58,3 +58,26 @@ CREATE TABLE user_upload_img (
   CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
 );
   
+
+-- DUMMY TRAINER
+INSERT INTO
+  users (name, email, password, role)
+VALUES
+  (
+    'John Doe',
+    'john@mail.com',
+    crypt ('password', gen_salt ('bf')),
+    'TRAINER'
+  ),
+  (
+    'Jane Smith',
+    'jane@mail.com',
+    crypt ('password', gen_salt ('bf')),
+    'TRAINER'
+  ),
+  (
+    'Bob Johnson',
+    'bob@mail.com',
+    crypt ('password', gen_salt ('bf')),
+    'TRAINER'
+  )

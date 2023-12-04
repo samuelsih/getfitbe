@@ -38,6 +38,8 @@ export class AuthRepository {
         .executeTakeFirstOrThrow();
 
       this.logger.debug({ mode: 'repository.addUser', data: result });
+
+      return result.id;
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('unique constraint')) {
@@ -68,5 +70,26 @@ export class AuthRepository {
 
     this.logger.debug({ mode: 'repository.findUser', data: result });
     return result as LoginResultDTO;
+  }
+
+  async addUserToConversation(id: string) {
+    const trainers = await this.db
+      .selectFrom('users')
+      .where('role', '=', 'TRAINER')
+      .select(['id'])
+      .execute();
+
+    const inserted = [];
+    trainers.forEach((trainer) => {
+      inserted.push({
+        user_id: id,
+        trainer_id: trainer.id,
+      });
+    });
+
+    await this.db
+      .insertInto('conversations')
+      .values(inserted)
+      .executeTakeFirstOrThrow();
   }
 }

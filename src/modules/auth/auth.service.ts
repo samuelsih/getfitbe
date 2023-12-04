@@ -5,6 +5,7 @@ import { LoginRequestDTO, LoginResultDTO } from './dto/login.dto';
 import { InvalidCredentialsError } from '#/exception/invalidCredentials.error';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
   ) {}
 
   async registerUser(dto: RegisterRequestDTO) {
-    await this.repo.addUser(dto);
+    const id = await this.repo.addUser(dto);
+    return id;
   }
 
   async getUser(dto: LoginRequestDTO) {
@@ -42,5 +44,10 @@ export class AuthService {
       issuer: this.configService.get('JWT_ISSUER'),
     });
     return { accessToken, refreshToken };
+  }
+
+  @OnEvent('user.registered', { async: true })
+  async handleUserOnRegistered(userID: string) {
+    await this.repo.addUserToConversation(userID);
   }
 }
