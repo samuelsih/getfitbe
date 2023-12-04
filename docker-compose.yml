@@ -2,7 +2,6 @@ version: '3'
 
 services:
   api:
-    profiles: ["dev"]
     container_name: api
     depends_on:
       - postgres
@@ -14,6 +13,7 @@ services:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
     env_file: .env
+    
   postgres:
     image: postgres:latest
     container_name: postgres
