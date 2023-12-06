@@ -1,6 +1,17 @@
 version: '3'
 
 services:    
+  soketi:
+    container_name: soketi
+    image: quay.io/soketi/soketi:1.4-16-alpine
+    ports: 
+      - 6001:6001
+      - 9601:9601
+    environment:
+      DEFAULT_APP_ID: getfitsoketi
+      DEFAULT_APP_KEY: getfitkey
+      DEFAULT_APP_SECRET: getfitsecret 
+
   postgres:
     image: postgres:latest
     container_name: postgres

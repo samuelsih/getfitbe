@@ -22,7 +22,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private event: EventEmitter2,
+    private readonly event: EventEmitter2,
   ) {}
 
   @Post('user/register')

@@ -6,6 +6,7 @@ import { AllExceptionFilter } from './exception/all.filter';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { setupLoggerModule } from './logger/logger';
+import { customCSS } from './swagger/swaggerDark';
 
 declare const module: any;
 
@@ -39,7 +40,9 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    customCss: customCSS(),
+  });
 
   await app.listen(config.get('APP_PORT'));
 

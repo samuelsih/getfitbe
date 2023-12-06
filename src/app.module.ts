@@ -32,6 +32,11 @@ import { ChatModule } from './modules/chat/chat.module';
         MINIO_ACCESS_KEY: Joi.string().required(),
         MINIO_SECRET_KEY: Joi.string().required(),
         MINIO_BUCKET_IMG: Joi.string().required(),
+        PUSHER_APP_ID: Joi.string().required(),
+        PUSHER_APP_KEY: Joi.string().required(),
+        PUSHER_APP_SECRET: Joi.string().required(),
+        PUSHER_APP_HOST: Joi.string().required(),
+        PUSHER_APP_PORT: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: true,
