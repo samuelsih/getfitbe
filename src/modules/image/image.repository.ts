@@ -1,5 +1,6 @@
 import { DB } from '#/tables';
-import { Inject, Injectable } from '@nestjs/common';
+import { PostgresErrorCode, isDatabaseError } from '#/tables/error';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { InjectKysely } from 'nestjs-kysely';
 import { Logger } from 'winston';
@@ -33,7 +34,15 @@ export class ImageRepository {
         })
         .executeTakeFirstOrThrow();
     } catch (error) {
+      if (
+        isDatabaseError(error) &&
+        error.code === PostgresErrorCode.ForeignKeyViolation
+      ) {
+        throw new BadRequestException(`Unknown data ${error.column}`);
+      }
+
       this.logger.error(error);
+      throw error;
     }
   }
 }

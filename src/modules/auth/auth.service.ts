@@ -1,23 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { RegisterRequestDTO } from './dto/register.dto';
-import { LoginRequestDTO, LoginResultDTO } from './dto/login.dto';
+import { LoginRequestDTO } from './dto/login.dto';
 import { InvalidCredentialsError } from '#/exception/invalidCredentials.error';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
+import Redis from 'ioredis';
+import { InjectRedis } from '@songkeys/nestjs-redis';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly repo: AuthRepository,
+    @InjectRedis() private readonly redis: Redis,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   async registerUser(dto: RegisterRequestDTO) {
-    const id = await this.repo.addUser(dto);
-    return id;
+    const result = await this.repo.addUser(dto);
+    return result;
   }
 
   async getUser(dto: LoginRequestDTO) {
@@ -29,7 +33,7 @@ export class AuthService {
     return loginUser;
   }
 
-  async generateJWT(payload: LoginResultDTO) {
+  async generateJWT(payload: User) {
     const accessToken = await this.jwtService.signAsync(payload, {
       subject: payload.id,
       secret: this.configService.get('JWT_SECRET'),
@@ -47,7 +51,7 @@ export class AuthService {
   }
 
   @OnEvent('user.registered', { async: true })
-  async handleUserOnRegistered(userID: string) {
-    await this.repo.addUserToConversation(userID);
+  async handleUserOnRegistered(user: User) {
+    await this.repo.addUserToConversation(user.id);
   }
 }

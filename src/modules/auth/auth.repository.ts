@@ -4,9 +4,10 @@ import { InjectKysely } from 'nestjs-kysely';
 import { RegisterRequestDTO } from './dto/register.dto';
 import { sql } from 'kysely';
 import { AlreadyExistsError } from '#/exception/alreadyExists.error';
-import { LoginRequestDTO, LoginResultDTO } from './dto/login.dto';
+import { LoginRequestDTO } from './dto/login.dto';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class AuthRepository {
@@ -30,16 +31,16 @@ export class AuthRepository {
           'name',
           'email',
           'image',
-          'email_verified',
+          'email_verified as emailVerified',
           'role',
-          'created_at',
-          'updated_at',
+          'created_at as createdAt',
+          'updated_at as updatedAt',
         ])
         .executeTakeFirstOrThrow();
 
       this.logger.debug({ mode: 'repository.addUser', data: result });
 
-      return result.id;
+      return result;
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('unique constraint')) {
@@ -55,7 +56,6 @@ export class AuthRepository {
     const result = await this.db
       .selectFrom('users')
       .where('email', '=', dto.email)
-      .where('role', '=', 'USER')
       .where('password', '=', sql`crypt(${dto.password}, password)`)
       .select([
         'id',
@@ -69,14 +69,14 @@ export class AuthRepository {
       .executeTakeFirst();
 
     this.logger.debug({ mode: 'repository.findUser', data: result });
-    return result as LoginResultDTO;
+    return result as User;
   }
 
   async addUserToConversation(id: string) {
     const trainers = await this.db
       .selectFrom('users')
       .where('role', '=', 'TRAINER')
-      .select(['id'])
+      .selectAll()
       .execute();
 
     const inserted = [];
@@ -91,5 +91,7 @@ export class AuthRepository {
       .insertInto('conversations')
       .values(inserted)
       .executeTakeFirstOrThrow();
+
+    return trainers;
   }
 }

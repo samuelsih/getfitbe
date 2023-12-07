@@ -34,7 +34,7 @@ export class ChatRepository {
 
   async insertMessage(dto: CreateMessageDTO, senderID: string) {
     try {
-      const result = await this.db
+      await this.db
         .insertInto('messages')
         .values({
           content: dto.message,

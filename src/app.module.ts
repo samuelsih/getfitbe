@@ -11,6 +11,7 @@ import { MinioModule } from 'nestjs-minio-client';
 import { ImageModule } from './modules/image/image.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatModule } from './modules/chat/chat.module';
+import { RedisModule } from '@songkeys/nestjs-redis';
 
 @Module({
   imports: [
@@ -81,6 +82,18 @@ import { ChatModule } from './modules/chat/chat.module';
           useSSL: false,
           accessKey: configService.get('MINIO_ACCESS_KEY'),
           secretKey: configService.get('MINIO_SECRET_KEY'),
+        };
+      },
+    }),
+    RedisModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          config: {
+            host: configService.get('REDIS_HOST'),
+            port: configService.get<number>('REDIS_PORT'),
+            password: configService.get('REDIS_PASSWORD'),
+          },
         };
       },
     }),

@@ -30,12 +30,12 @@ export class AuthController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterRequestDTO })
   async registerAsUser(@Body() dto: RegisterRequestDTO) {
-    const userID = await this.authService.registerUser(dto);
-    this.event.emit('user.registered', userID);
+    const user = await this.authService.registerUser(dto);
+    this.event.emit('user.registered', user);
     return new BaseResponse(201, 'Registered');
   }
 
-  @Post('user/login')
+  @Post('login')
   @HttpCode(200)
   @ApiBody({ type: LoginRequestDTO })
   async loginAsUser(@Body() dto: LoginRequestDTO) {

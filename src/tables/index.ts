@@ -23,13 +23,6 @@ export interface Messages {
   sender_id: string;
 }
 
-export interface UserImages {
-  created_at: Generated<Timestamp>;
-  id: Generated<string>;
-  img_url: string;
-  user_id: string;
-}
-
 export interface Users {
   created_at: Generated<Timestamp>;
   email: string;
@@ -52,7 +45,6 @@ export interface UserUploadImg {
 export interface Tables {
   conversations: Conversations;
   messages: Messages;
-  user_images: UserImages;
   user_upload_img: UserUploadImg;
   users: Users;
 }
