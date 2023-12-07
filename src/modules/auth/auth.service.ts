@@ -6,15 +6,12 @@ import { InvalidCredentialsError } from '#/exception/invalidCredentials.error';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
-import Redis from 'ioredis';
-import { InjectRedis } from '@songkeys/nestjs-redis';
 import { User } from './entity/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly repo: AuthRepository,
-    @InjectRedis() private readonly redis: Redis,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -53,5 +50,15 @@ export class AuthService {
   @OnEvent('user.registered', { async: true })
   async handleUserOnRegistered(user: User) {
     await this.repo.addUserToConversation(user.id);
+    const conversationWithTrainers =
+      await this.repo.searchAllConversationTrainer(user.id);
+
+    for (const conv of conversationWithTrainers) {
+      const { conversationID, ...user } = conv;
+
+      const trainer = User.create(user);
+
+      await this.repo.addConversationToRedis(conversationID, [user, trainer]);
+    }
   }
 }

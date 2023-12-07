@@ -8,12 +8,15 @@ import { LoginRequestDTO } from './dto/login.dto';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { User } from './entity/user.entity';
+import { InjectRedis } from '@songkeys/nestjs-redis';
+import { Redis } from 'ioredis';
 
 @Injectable()
 export class AuthRepository {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @InjectKysely() private readonly db: DB,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async addUser(dto: RegisterRequestDTO) {
@@ -62,6 +65,7 @@ export class AuthRepository {
         'name',
         'email',
         'image',
+        'email_verified as emailVerified',
         'role',
         'created_at as createdAt',
         'updated_at as updatedAt',
@@ -91,7 +95,32 @@ export class AuthRepository {
       .insertInto('conversations')
       .values(inserted)
       .executeTakeFirstOrThrow();
+  }
 
-    return trainers;
+  async searchAllConversationTrainer(userID: string) {
+    const result = await this.db
+      .selectFrom('users')
+      .innerJoin('conversations', 'users.id', 'conversations.user_id')
+      .where('users.role', '=', 'TRAINER')
+      .where('conversations.user_id', '=', userID)
+      .select([
+        'conversations.id as conversationID',
+        'users.id',
+        'users.name',
+        'users.email',
+        'users.image',
+        'users.email_verified as emailVerified',
+        'users.role',
+        'users.created_at as createdAt',
+        'users.updated_at as updatedAt',
+      ])
+      .execute();
+
+    return result;
+  }
+
+  async addConversationToRedis(conversationID: string, users: User[]) {
+    const jsonizeUser = users.map((user) => JSON.stringify(user));
+    await this.redis.rpush(conversationID, ...jsonizeUser);
   }
 }

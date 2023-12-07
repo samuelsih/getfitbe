@@ -49,6 +49,6 @@ export class AuthController {
   @Get('/me')
   @ApiBearerAuth()
   async whoami(@Req() request: Request) {
-    return new BaseResponse(200, 'OK', request['user'] || request['trainer']);
+    return new BaseResponse(200, 'OK', request['user']);
   }
 }

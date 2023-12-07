@@ -10,7 +10,8 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { Guest, additionalJWTPayload } from './jwt.guard';
+import { additionalJWTPayload } from './jwt.guard';
+import { User } from '#/modules/auth/entity/user.entity';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -39,7 +40,7 @@ export class JwtGuard implements CanActivate {
         throw new UnauthorizedException();
       }
 
-      const guest = this.excludeAdditionalJWTPayload(payload) as Guest;
+      const guest = this.excludeAdditionalJWTPayload(payload) as User;
 
       if (guest.role === 'USER') {
         request['user'] = guest;

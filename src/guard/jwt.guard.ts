@@ -1,3 +1,4 @@
+import { User } from '#/modules/auth/entity/user.entity';
 import {
   CanActivate,
   ExecutionContext,
@@ -10,14 +11,6 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-
-export type Guest = {
-  email: string;
-  id: string;
-  image?: string;
-  name: string;
-  role: 'USER' | 'TRAINER';
-};
 
 export const additionalJWTPayload = [
   'iss',
@@ -57,7 +50,7 @@ export class JwtGuard implements CanActivate {
         throw new UnauthorizedException();
       }
 
-      const guest = this.excludeAdditionalJWTPayload(payload) as Guest;
+      const guest = this.excludeAdditionalJWTPayload(payload) as User;
 
       if (guest.role === 'USER') {
         request['user'] = guest;

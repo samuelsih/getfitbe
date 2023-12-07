@@ -16,7 +16,7 @@ export class ImageRepository {
     const result = await this.db
       .selectFrom('user_upload_img')
       .where('user_id', '=', userID)
-      .select(['id', 'img_url as imgURL'])
+      .select(['id', 'img_url as imgURL', 'created_at as createdAt'])
       .limit(5)
       .offset(5 * (page - 1))
       .execute();

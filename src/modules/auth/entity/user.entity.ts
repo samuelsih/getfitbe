@@ -24,4 +24,36 @@ export class User {
 
   @ApiProperty({ example: '2023-11-28T14:07:15.863Z' })
   updatedAt: Date;
+
+  static create({
+    name,
+    role,
+    email,
+    id,
+    image,
+    emailVerified,
+    createdAt,
+    updatedAt,
+  }: {
+    name: string;
+    role: 'USER' | 'TRAINER';
+    email: string;
+    id: string;
+    image: string;
+    emailVerified: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    const user = new User();
+    user.createdAt = createdAt;
+    user.id = id;
+    user.name = name;
+    user.email = email;
+    user.emailVerified = emailVerified;
+    user.role = role;
+    user.image = image;
+    user.updatedAt = updatedAt;
+
+    return user;
+  }
 }
