@@ -4,9 +4,10 @@ import { ImageController } from './image.controller';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { ImageRepository } from './image.repository';
 
 @Module({
-  providers: [ImageService],
+  providers: [ImageService, ImageRepository],
   controllers: [ImageController],
   exports: [ImageService],
   imports: [

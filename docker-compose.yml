@@ -8,9 +8,15 @@ services:
       - 6001:6001
       - 9601:9601
     environment:
-      DEFAULT_APP_ID: getfitsoketi
-      DEFAULT_APP_KEY: getfitkey
-      DEFAULT_APP_SECRET: getfitsecret 
+      SOKETI_DEBUG: 1
+      SOKETI_DEFAULT_APP_ID: getfitsoketi
+      SOKETI_DEFAULT_APP_KEY: getfitkey
+      SOKETI_DEFAULT_APP_SECRET: getfitsecret 
+      PUSHER_HOST: '127.0.0.1'
+      PUSHER_PORT: '6001'
+      PUSHER_SCHEME: http
+      METRICS_SERVER_PORT: '9601'
+
 
   postgres:
     image: postgres:latest

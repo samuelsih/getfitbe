@@ -19,8 +19,15 @@ export interface Messages {
   content: string;
   conversation_id: string;
   created_at: Generated<Timestamp>;
-  id: Generated<string>;
+  id: Generated<number>;
   sender_id: string;
+}
+
+export interface UserImages {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  img_url: string;
+  user_id: string;
 }
 
 export interface Users {
@@ -35,9 +42,18 @@ export interface Users {
   updated_at: Generated<Timestamp | null>;
 }
 
+export interface UserUploadImg {
+  created_at: Generated<Timestamp>;
+  id: Generated<string>;
+  img_url: string;
+  user_id: string;
+}
+
 export interface Tables {
   conversations: Conversations;
   messages: Messages;
+  user_images: UserImages;
+  user_upload_img: UserUploadImg;
   users: Users;
 }
 

@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+  dev:
+    cmds:
+      - npm run dev
+  
+  reup:
+    cmds:
+      - docker compose down -v
+      - docker compose up -d
