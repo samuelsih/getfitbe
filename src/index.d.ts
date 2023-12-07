@@ -5,7 +5,10 @@ type User = {
   id: string;
   image?: string;
   name: string;
+  emailVerified?: Date;
   role: 'USER';
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type Trainer = {
@@ -13,7 +16,10 @@ type Trainer = {
   id: string;
   image?: string;
   name: string;
-  role: 'USER';
+  emailVerified?: Date;
+  role: 'TRAINER';
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 declare global {

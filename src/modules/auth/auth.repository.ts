@@ -72,7 +72,7 @@ export class AuthRepository {
     return result as User;
   }
 
-  async addUserToConversation(id: string) {
+  async addUserToConversation(userID: string) {
     const trainers = await this.db
       .selectFrom('users')
       .where('role', '=', 'TRAINER')
@@ -82,7 +82,7 @@ export class AuthRepository {
     const inserted = [];
     trainers.forEach((trainer) => {
       inserted.push({
-        user_id: id,
+        user_id: userID,
         trainer_id: trainer.id,
       });
     });
