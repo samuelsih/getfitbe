@@ -11,5 +11,7 @@ export class ChatService {
     return result;
   }
 
-  async addMessage(dto: CreateMessageDTO) {}
+  async addMessage(dto: CreateMessageDTO, senderID: string) {
+    await this.repo.insertMessage(dto, senderID);
+  }
 }

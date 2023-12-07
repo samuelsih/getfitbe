@@ -5,12 +5,15 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { CreateMessageDTO } from './dto/message.dto';
 import { PostgresErrorCode, isDatabaseError } from '#/tables/error';
+import { Redis } from 'ioredis';
+import { InjectRedis } from '@songkeys/nestjs-redis';
 
 @Injectable()
 export class ChatRepository {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @InjectKysely() private readonly db: DB,
+    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async getAllConversations(userID: string) {

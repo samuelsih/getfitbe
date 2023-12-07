@@ -54,9 +54,9 @@ export class AuthService {
       await this.repo.searchAllConversationTrainer(user.id);
 
     for (const conv of conversationWithTrainers) {
-      const { conversationID, ...user } = conv;
+      const { conversationID, ...userTrainer } = conv;
 
-      const trainer = User.create(user);
+      const trainer = User.create(userTrainer);
 
       await this.repo.addConversationToRedis(conversationID, [user, trainer]);
     }

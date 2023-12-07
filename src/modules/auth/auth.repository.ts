@@ -120,7 +120,8 @@ export class AuthRepository {
   }
 
   async addConversationToRedis(conversationID: string, users: User[]) {
-    const jsonizeUser = users.map((user) => JSON.stringify(user));
+    const jsonizeUser = users.map((user) => user.toJSON());
     await this.redis.rpush(conversationID, ...jsonizeUser);
+    this.logger.debug(`inserting completed: ${conversationID}`);
   }
 }

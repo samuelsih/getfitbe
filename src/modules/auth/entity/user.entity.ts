@@ -25,6 +25,19 @@ export class User {
   @ApiProperty({ example: '2023-11-28T14:07:15.863Z' })
   updatedAt: Date;
 
+  toJSON() {
+    return JSON.stringify({
+      email: this.email,
+      id: this.id,
+      image: this.image,
+      name: this.name,
+      emailVerified: this.emailVerified,
+      role: this.role,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    });
+  }
+
   static create({
     name,
     role,

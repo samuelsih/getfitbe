@@ -38,6 +38,7 @@ import { RedisModule } from '@songkeys/nestjs-redis';
         PUSHER_APP_SECRET: Joi.string().required(),
         PUSHER_APP_HOST: Joi.string().required(),
         PUSHER_APP_PORT: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
       }),
       validationOptions: {
         abortEarly: true,
@@ -90,9 +91,7 @@ import { RedisModule } from '@songkeys/nestjs-redis';
       useFactory: (configService: ConfigService) => {
         return {
           config: {
-            host: configService.get('REDIS_HOST'),
             port: configService.get<number>('REDIS_PORT'),
-            password: configService.get('REDIS_PASSWORD'),
           },
         };
       },
