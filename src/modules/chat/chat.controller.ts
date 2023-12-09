@@ -16,6 +16,7 @@ export class ChatController {
   @Get('/list')
   @JWTRole(Role.User)
   @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
   async getAvailableChats(@Req() request: Request) {
     const user = request['user'];
     const result = await this.chatService.getListTrainers(user.id);
