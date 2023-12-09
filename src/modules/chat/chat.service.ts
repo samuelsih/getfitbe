@@ -24,6 +24,9 @@ export class ChatService {
       conversationID: conversation.conversationID,
       event: 'messages:new',
       data: {
+        messageID: conversation.messageID,
+        messageContent: conversation.messageContent,
+        messageCreatedAt: conversation.messageCreatedAt,
         senderID: senderID,
         receiverID: receiver,
         content: dto.message,
