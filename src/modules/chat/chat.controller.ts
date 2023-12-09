@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { JWTRole } from '#/decorator/roles.decorator';
 import { Role, RolesGuard } from '#/guard/role.guard';
@@ -23,13 +31,27 @@ export class ChatController {
     return new BaseResponse(200, 'OK', result);
   }
 
+  @Get('/message/:conversationID')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  async getMessageList(
+    @Req() request: Request,
+    @Param('conversationID') conversationID: string,
+  ) {
+    const user = request['user'];
+    const result = await this.chatService.findAllMessages(
+      user.id,
+      conversationID,
+    );
+    return new BaseResponse(200, 'OK', result);
+  }
+
   @Post('/message')
   @UseGuards(JwtGuard)
   @ApiBody({ type: CreateMessageDTO })
   @ApiBearerAuth()
   async createMessage(@Req() request: Request, @Body() dto: CreateMessageDTO) {
     const user = request['user'];
-    console.log('ini user:', user);
     await this.chatService.addMessage(dto, user.id);
     return new BaseResponse(200, 'OK');
   }

@@ -62,4 +62,20 @@ export class ChatRepository {
       throw error;
     }
   }
+
+  async getAllMessages(userID: string, conversationID: string) {
+    const result = await this.db
+      .selectFrom('messages')
+      .where('conversation_id', '=', conversationID)
+      .orderBy('created_at desc')
+      .select([
+        'id',
+        'sender_id as senderID',
+        'content',
+        'created_at as createdAt',
+      ])
+      .execute();
+
+    return result;
+  }
 }

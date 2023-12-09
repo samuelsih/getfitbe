@@ -31,4 +31,9 @@ export class ChatService {
     });
     return conversation;
   }
+
+  async findAllMessages(userID: string, conversationID: string) {
+    const result = await this.repo.getAllMessages(userID, conversationID);
+    return result;
+  }
 }
