@@ -24,10 +24,12 @@ export class ChatController {
   }
 
   @Post('/message')
+  @UseGuards(JwtGuard)
   @ApiBody({ type: CreateMessageDTO })
   @ApiBearerAuth()
   async createMessage(@Req() request: Request, @Body() dto: CreateMessageDTO) {
     const user = request['user'];
+    console.log('ini user:', user);
     await this.chatService.addMessage(dto, user.id);
     return new BaseResponse(200, 'OK');
   }
