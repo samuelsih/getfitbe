@@ -28,6 +28,7 @@ export class ChatController {
   @ApiBearerAuth()
   async createMessage(@Req() request: Request, @Body() dto: CreateMessageDTO) {
     const user = request['user'];
-    this.chatService.addMessage(dto, user.id);
+    await this.chatService.addMessage(dto, user.id);
+    return new BaseResponse(200, 'OK');
   }
 }
