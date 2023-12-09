@@ -49,6 +49,7 @@ export class AuthController {
   @Get('/me')
   @ApiBearerAuth()
   async whoami(@Req() request: Request) {
-    return new BaseResponse(200, 'OK', request['user']);
+    const user = request['user'];
+    return new BaseResponse(200, 'OK', user);
   }
 }

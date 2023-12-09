@@ -8,15 +8,12 @@ import { LoginRequestDTO } from './dto/login.dto';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { User } from './entity/user.entity';
-import { InjectRedis } from '@songkeys/nestjs-redis';
-import { Redis } from 'ioredis';
 
 @Injectable()
 export class AuthRepository {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @InjectKysely() private readonly db: DB,
-    @InjectRedis() private readonly redis: Redis,
   ) {}
 
   async addUser(dto: RegisterRequestDTO) {
@@ -117,11 +114,5 @@ export class AuthRepository {
       .execute();
 
     return result;
-  }
-
-  async addConversationToRedis(conversationID: string, users: User[]) {
-    const jsonizeUser = users.map((user) => user.toJSON());
-    await this.redis.rpush(conversationID, ...jsonizeUser);
-    this.logger.debug(`inserting completed: ${conversationID}`);
   }
 }

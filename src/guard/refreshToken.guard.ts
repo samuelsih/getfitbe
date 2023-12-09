@@ -42,11 +42,8 @@ export class JwtGuard implements CanActivate {
 
       const guest = this.excludeAdditionalJWTPayload(payload) as User;
 
-      if (guest.role === 'USER') {
+      if (guest.role === 'USER' || guest.role === 'TRAINER') {
         request['user'] = guest;
-        return true;
-      } else if (guest.role === 'TRAINER') {
-        request['trainer'] = guest;
         return true;
       }
 

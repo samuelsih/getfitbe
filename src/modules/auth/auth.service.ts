@@ -50,15 +50,5 @@ export class AuthService {
   @OnEvent('user.registered', { async: true })
   async handleUserOnRegistered(user: User) {
     await this.repo.addUserToConversation(user.id);
-    const conversationWithTrainers =
-      await this.repo.searchAllConversationTrainer(user.id);
-
-    for (const conv of conversationWithTrainers) {
-      const { conversationID, ...userTrainer } = conv;
-
-      const trainer = User.create(userTrainer);
-
-      await this.repo.addConversationToRedis(conversationID, [user, trainer]);
-    }
   }
 }
