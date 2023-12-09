@@ -39,15 +39,26 @@ export class ChatRepository {
     try {
       const result = await this.db
         .with('inserted', (eb) =>
-          eb.insertInto('messages').values({
-            content: dto.message,
-            conversation_id: dto.conversation_id,
-            sender_id: senderID,
-          }),
+          eb
+            .insertInto('messages')
+            .values({
+              content: dto.message,
+              conversation_id: dto.conversation_id,
+              sender_id: senderID,
+            })
+            .returningAll(),
         )
         .selectFrom('conversations')
+        .innerJoin('inserted', 'conversation_id', 'inserted.conversation_id')
         .where('conversations.id', '=', dto.conversation_id)
-        .select(['id', 'trainer_id as trainerID', 'user_id as userID'])
+        .select([
+          'conversations.id as conversationID',
+          'conversations.trainer_id as trainerID',
+          'conversations.user_id as userID',
+          'inserted.id as messageID',
+          'inserted.content as messageContent',
+          'inserted.created_at as messageCreatedAt',
+        ])
         .executeTakeFirstOrThrow();
 
       return result;

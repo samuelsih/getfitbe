@@ -21,7 +21,7 @@ export class ChatService {
       conversation.userID === senderID ? senderID : conversation.trainerID;
 
     this.event.emit('chat', {
-      conversationID: conversation.id,
+      conversationID: conversation.conversationID,
       event: 'messages:new',
       data: {
         senderID: senderID,
