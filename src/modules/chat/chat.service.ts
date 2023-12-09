@@ -24,12 +24,11 @@ export class ChatService {
       conversationID: conversation.conversationID,
       event: 'messages:new',
       data: {
-        messageID: conversation.messageID,
-        messageContent: conversation.messageContent,
-        messageCreatedAt: conversation.messageCreatedAt,
+        id: conversation.messageID,
         senderID: senderID,
         receiverID: receiver,
         content: dto.message,
+        createdAt: conversation.messageCreatedAt,
       },
     });
     return conversation;
