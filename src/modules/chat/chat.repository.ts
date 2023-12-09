@@ -5,18 +5,15 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { CreateMessageDTO } from './dto/message.dto';
 import { PostgresErrorCode, isDatabaseError } from '#/tables/error';
-import { Redis } from 'ioredis';
-import { InjectRedis } from '@songkeys/nestjs-redis';
 
 @Injectable()
 export class ChatRepository {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
     @InjectKysely() private readonly db: DB,
-    @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  async getAllConversations(userID: string) {
+  async getAllConversationsForUser(userID: string) {
     const result = await this.db
       .selectFrom('conversations')
       .innerJoin('users', 'conversations.trainer_id', 'users.id')
@@ -31,6 +28,22 @@ export class ChatRepository {
       .execute();
 
     this.logger.debug({ result: result });
+
+    return result;
+  }
+
+  async getAllConversationsForTrainer(userID: string) {
+    const result = await this.db
+      .selectFrom('conversations')
+      .innerJoin('users', 'conversations.user_id', 'users.id')
+      .where('conversations.trainer_id', '=', userID)
+      .select([
+        'conversations.id as conversationID',
+        'users.id as userID',
+        'users.name as userName',
+        'users.image as userImage',
+      ])
+      .execute();
 
     return result;
   }

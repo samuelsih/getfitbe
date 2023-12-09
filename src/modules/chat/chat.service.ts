@@ -11,7 +11,12 @@ export class ChatService {
   ) {}
 
   async getListTrainers(userID: string) {
-    const result = await this.repo.getAllConversations(userID);
+    const result = await this.repo.getAllConversationsForUser(userID);
+    return result;
+  }
+
+  async getListUsers(userID: string) {
+    const result = await this.repo.getAllConversationsForTrainer(userID);
     return result;
   }
 
