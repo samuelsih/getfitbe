@@ -5,7 +5,7 @@ import { Role, RolesGuard } from '#/guard/role.guard';
 import { JwtGuard } from '#/guard/jwt.guard';
 import { Request } from 'express';
 import { BaseResponse } from '#/response/base';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CreateMessageDTO } from './dto/message.dto';
 
 @Controller('chat')
@@ -23,6 +23,7 @@ export class ChatController {
   }
 
   @Post('/message')
+  @ApiBody({ type: CreateMessageDTO })
   @ApiBearerAuth()
   async createMessage(@Req() request: Request, @Body() dto: CreateMessageDTO) {
     const user = request['user'];
