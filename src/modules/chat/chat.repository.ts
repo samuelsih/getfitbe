@@ -37,14 +37,20 @@ export class ChatRepository {
 
   async insertMessage(dto: CreateMessageDTO, senderID: string) {
     try {
-      await this.db
-        .insertInto('messages')
-        .values({
-          content: dto.message,
-          conversation_id: dto.conversation_id,
-          sender_id: senderID,
-        })
+      const result = await this.db
+        .with('inserted', (eb) =>
+          eb.insertInto('messages').values({
+            content: dto.message,
+            conversation_id: dto.conversation_id,
+            sender_id: senderID,
+          }),
+        )
+        .selectFrom('conversations')
+        .where('conversations.id', '=', dto.conversation_id)
+        .select(['id', 'trainer_id as trainerID', 'user_id as userID'])
         .executeTakeFirstOrThrow();
+
+      return result;
     } catch (error) {
       if (
         isDatabaseError(error) &&

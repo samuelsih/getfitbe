@@ -6,16 +6,12 @@ import { JwtGuard } from '#/guard/jwt.guard';
 import { Request } from 'express';
 import { BaseResponse } from '#/response/base';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateMessageDTO } from './dto/message.dto';
 
 @Controller('chat')
 @ApiTags('Chat')
 export class ChatController {
-  constructor(
-    private readonly chatService: ChatService,
-    private readonly event: EventEmitter2,
-  ) {}
+  constructor(private readonly chatService: ChatService) {}
 
   @Get('/list')
   @JWTRole(Role.User)
@@ -30,6 +26,6 @@ export class ChatController {
   @ApiBearerAuth()
   async createMessage(@Req() request: Request, @Body() dto: CreateMessageDTO) {
     const user = request['user'];
-    await this.chatService.addMessage(dto, user.id);
+    this.chatService.addMessage(dto, user.id);
   }
 }
