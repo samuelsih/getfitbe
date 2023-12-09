@@ -23,7 +23,7 @@ export class ChatService {
   async addMessage(dto: CreateMessageDTO, senderID: string) {
     const conversation = await this.repo.insertMessage(dto, senderID);
     const receiver =
-      conversation.userID === senderID ? senderID : conversation.trainerID;
+      conversation.userID === senderID ? conversation.trainerID : senderID;
 
     this.event.emit('chat', {
       conversationID: conversation.conversationID,
