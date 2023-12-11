@@ -80,7 +80,7 @@ export class ChatRepository {
         isDatabaseError(error) &&
         error.code === PostgresErrorCode.ForeignKeyViolation
       ) {
-        throw new BadRequestException(`Unknown data ${error.column}`);
+        throw new BadRequestException(`Unknown data`);
       }
 
       throw error;

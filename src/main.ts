@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '#/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { customValidationPipe } from './config';
-import { HttpExceptionFilter } from './exception/http.filter';
+import { AllExceptionFilter } from './exception/all.filter';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { setupLoggerModule } from './logger/logger';
@@ -27,7 +27,7 @@ async function bootstrap() {
   app.use(helmet());
 
   app.useGlobalPipes(customValidationPipe);
-  app.useGlobalFilters(new HttpExceptionFilter(loggerModule));
+  app.useGlobalFilters(new AllExceptionFilter(loggerModule));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Getfit API')

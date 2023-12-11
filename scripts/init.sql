@@ -41,7 +41,7 @@ CREATE INDEX user_role_idx ON users(role);
 CREATE FUNCTION
   update_updated_at_column() RETURNS trigger LANGUAGE plpgsql AS $$
   BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP();
+    NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
   END;
 $$;

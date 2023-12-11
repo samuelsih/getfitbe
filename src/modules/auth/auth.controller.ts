@@ -4,9 +4,7 @@ import {
   Get,
   HttpCode,
   Post,
-  Query,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,8 +15,6 @@ import { BaseResponse } from '#/response/base';
 import { JwtGuard } from '#/guard/jwt.guard';
 import { FormDataRequest } from 'nestjs-form-data';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { MessagingService } from '../chat/messaging.service';
-import { Response } from 'express';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -26,7 +22,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly event: EventEmitter2,
-    private readonly messagingService: MessagingService,
   ) {}
 
   @Post('user/register')
@@ -47,29 +42,6 @@ export class AuthController {
     const jwt = await this.authService.generateJWT(user);
 
     return new BaseResponse(200, 'OK', { user, jwt });
-  }
-
-  @Post('pusher')
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth()
-  pusherAuthentication(
-    @Req() request: Request,
-    @Query('socket_id') socketID: string,
-    @Query('callback') callback: string,
-    @Res() response: Response,
-  ) {
-    const user = request['user'];
-    const result = this.messagingService.auth(socketID, user, callback);
-
-    response.set({
-      'Content-Type': 'application/javascript',
-    });
-
-    if (result === null) {
-      return response.status(403).send(result);
-    }
-
-    response.status(200).send(result);
   }
 
   @UseGuards(JwtGuard)
