@@ -9,9 +9,8 @@ import { MessagingService } from '../chat/messaging.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository],
+  providers: [AuthService, AuthRepository, MessagingService],
   imports: [
-    MessagingService,
     NestjsFormDataModule.config({ storage: MemoryStoredFile }),
     JwtModule.registerAsync({
       inject: [ConfigService],
