@@ -5,11 +5,13 @@ import { AuthRepository } from './auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+import { MessagingService } from '../chat/messaging.service';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, AuthRepository],
   imports: [
+    MessagingService,
     NestjsFormDataModule.config({ storage: MemoryStoredFile }),
     JwtModule.registerAsync({
       inject: [ConfigService],

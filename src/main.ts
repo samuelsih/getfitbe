@@ -2,17 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '#/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { customValidationPipe } from './config';
-import { AllExceptionFilter } from './exception/all.filter';
+import { HttpExceptionFilter } from './exception/http.filter';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { setupLoggerModule } from './logger/logger';
 import { customCSS } from './swagger/swaggerDark';
+import { AllFilter } from './exception/all.filter';
 
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
+  const loggerModule = setupLoggerModule(
+    config.get('ENVIRONMENT'),
+    'getfit-api',
+    config.get('TELEGRAM_TOKEN'),
+    config.get('TELEGRAM_CHANNEL'),
+  );
 
   app.enableCors({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -21,16 +28,8 @@ async function bootstrap() {
   app.use(helmet());
 
   app.useGlobalPipes(customValidationPipe);
-  app.useGlobalFilters(
-    new AllExceptionFilter(
-      setupLoggerModule(
-        config.get('ENVIRONMENT'),
-        'getfit-api',
-        config.get('TELEGRAM_TOKEN'),
-        config.get('TELEGRAM_CHANNEL'),
-      ),
-    ),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter(loggerModule));
+  app.useGlobalFilters(new AllFilter(loggerModule));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Getfit API')

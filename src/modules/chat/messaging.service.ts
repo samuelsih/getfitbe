@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import Pusher from 'pusher';
+import Pusher, { UserChannelData } from 'pusher';
 import { Logger } from 'winston';
+import { User } from '../auth/entity/user.entity';
 
 export interface MessageTrigger {
   conversationID: string;
@@ -38,5 +39,25 @@ export class MessagingService {
     } catch (error) {
       this.logger.error(error);
     }
+  }
+
+  async auth(socketID: string, user: User, callback: string) {
+    const { id, ...rest } = user;
+
+    const request: UserChannelData = {
+      id: id,
+      user_info: rest,
+    };
+
+    const authenticatedUser = this.pusher.authenticateUser(socketID, request);
+    if (authenticatedUser.auth === '' || authenticatedUser.user_data === '') {
+      return null;
+    }
+
+    const response = JSON.stringify(authenticatedUser);
+
+    const cb = callback.replace(/\\"/g, '') + '(' + response + ');';
+
+    return cb;
   }
 }
