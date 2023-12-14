@@ -19,6 +19,9 @@ export class User {
   @ApiProperty({ example: 'USER' })
   role: 'TRAINER' | 'USER';
 
+  @ApiProperty({ example: 'Satpol' })
+  bio?: string;
+
   @ApiProperty({ example: '2023-11-28T14:07:15.863Z' })
   createdAt: Date;
 
@@ -33,6 +36,7 @@ export class User {
       name: this.name,
       emailVerified: this.emailVerified,
       role: this.role,
+      bio: this.bio,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     });
@@ -44,6 +48,7 @@ export class User {
     email,
     id,
     image,
+    bio,
     emailVerified,
     createdAt,
     updatedAt,
@@ -53,6 +58,7 @@ export class User {
     email: string;
     id: string;
     image: string;
+    bio?: string;
     emailVerified: Date;
     createdAt: Date;
     updatedAt: Date;
@@ -64,6 +70,7 @@ export class User {
     user.email = email;
     user.emailVerified = emailVerified;
     user.role = role;
+    user.bio = bio;
     user.image = image;
     user.updatedAt = updatedAt;
 

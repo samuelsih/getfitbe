@@ -9,6 +9,7 @@ import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 @Module({
   controllers: [AuthController],
   providers: [AuthService, AuthRepository],
+  exports: [AuthService],
   imports: [
     NestjsFormDataModule.config({ storage: MemoryStoredFile }),
     JwtModule.registerAsync({

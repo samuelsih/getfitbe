@@ -12,6 +12,7 @@ CREATE TABLE
     password text NOT NULL,
     image text,
     role user_role NOT NULL,
+    bio text,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );

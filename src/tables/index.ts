@@ -30,6 +30,7 @@ export interface Users {
   id: Generated<string>;
   image: string | null;
   name: string;
+  bio: string | null;
   password: string;
   role: UserRole;
   updated_at: Generated<Timestamp | null>;

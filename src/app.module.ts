@@ -12,6 +12,7 @@ import { ImageModule } from './modules/image/image.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatModule } from './modules/chat/chat.module';
 import { RedisModule } from '@songkeys/nestjs-redis';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -100,6 +101,7 @@ import { RedisModule } from '@songkeys/nestjs-redis';
     AuthModule,
     ImageModule,
     ChatModule,
+    UserModule,
   ],
 })
 export class AppModule {}

@@ -63,6 +63,7 @@ export class AuthRepository {
         'email',
         'image',
         'email_verified as emailVerified',
+        'bio',
         'role',
         'created_at as createdAt',
         'updated_at as updatedAt',
