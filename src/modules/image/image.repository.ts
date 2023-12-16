@@ -13,26 +13,21 @@ export class ImageRepository {
   ) {}
 
   async all(userID: string, page: number) {
-    const lastImg = await this.db
+    const count = await this.db
       .selectFrom('user_upload_img')
-      .where('user_id', '=', userID)
-      .select(['id', 'img_url as imgURL', 'created_at as createdAt'])
-      .orderBy('createdAt desc')
+      .select((eb) => eb.fn.count('id').as('countImg'))
       .executeTakeFirst();
 
     const allImgs = await this.db
       .selectFrom('user_upload_img')
       .where('user_id', '=', userID)
-      .$if(lastImg !== null && lastImg !== undefined, (eb) =>
-        eb.where('id', '!=', lastImg.id),
-      )
       .select(['id', 'img_url as imgURL', 'created_at as createdAt'])
       .limit(5)
       .orderBy('createdAt desc')
       .offset(5 * (page - 1))
       .execute();
 
-    return { lastImg, result: allImgs };
+    return { count, result: allImgs };
   }
 
   async insert(userID: string, imgURL: string) {

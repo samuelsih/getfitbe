@@ -60,7 +60,7 @@ export class ImageController {
   async findAll(@Req() request: Request, @Query('page') page: number = 1) {
     const result = await this.imageService.getAll(request.user.id, page);
     return new BaseResponse(200, 'OK', {
-      newestImg: result.lastImg,
+      count: result.count.countImg,
       imgs: result.result,
     });
   }
