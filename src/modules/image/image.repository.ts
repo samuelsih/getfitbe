@@ -18,6 +18,7 @@ export class ImageRepository {
       .where('user_id', '=', userID)
       .select(['id', 'img_url as imgURL', 'created_at as createdAt'])
       .limit(5)
+      .orderBy('createdAt desc')
       .offset(5 * (page - 1))
       .execute();
 
