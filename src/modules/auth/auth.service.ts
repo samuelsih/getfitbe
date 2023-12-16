@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
-import { RegisterRequestDTO } from './dto/register.dto';
+import {
+  RegisterRequestDTO,
+  RegisterRequestWithImgURLDTO,
+} from './dto/register.dto';
 import { LoginRequestDTO } from './dto/login.dto';
 import { InvalidCredentialsError } from '#/exception/invalidCredentials.error';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { User } from './entity/user.entity';
+import { ImageService } from '../image/image.service';
 
 @Injectable()
 export class AuthService {
@@ -14,10 +18,24 @@ export class AuthService {
     private readonly repo: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly imgService: ImageService,
   ) {}
 
-  async registerUser(dto: RegisterRequestDTO) {
-    const result = await this.repo.addUser(dto);
+  async registerUser(dto: RegisterRequestDTO, bucketName: string) {
+    if (dto.avatar.size === 0) {
+      const result = await this.repo.addUser(dto);
+      return result;
+    }
+
+    const img = await this.imgService.uploadImage(dto.avatar, bucketName);
+    const withImgDTO = RegisterRequestWithImgURLDTO.create(
+      dto.name,
+      dto.email,
+      dto.password,
+      img.imgURL,
+    );
+
+    const result = await this.repo.addUser(withImgDTO, true);
     return result;
   }
 

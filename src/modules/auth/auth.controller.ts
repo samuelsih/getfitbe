@@ -15,6 +15,7 @@ import { BaseResponse } from '#/response/base';
 import { JwtGuard } from '#/guard/jwt.guard';
 import { FormDataRequest } from 'nestjs-form-data';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -22,6 +23,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly event: EventEmitter2,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('user/register')
@@ -29,7 +31,8 @@ export class AuthController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: RegisterRequestDTO })
   async registerAsUser(@Body() dto: RegisterRequestDTO) {
-    const user = await this.authService.registerUser(dto);
+    const bucketName = this.configService.get('MINIO_BUCKET_PROFILE_IMG');
+    const user = await this.authService.registerUser(dto, bucketName);
     this.event.emit('user.registered', user);
     return new BaseResponse(201, 'Registered');
   }

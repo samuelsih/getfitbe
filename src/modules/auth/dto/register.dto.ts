@@ -41,3 +41,23 @@ export class RegisterRequestDTO {
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   avatar: MemoryStoredFile;
 }
+
+export class RegisterRequestWithImgURLDTO {
+  name: string;
+
+  email: string;
+
+  password: string;
+
+  avatar: string;
+
+  static create(name: string, email: string, password: string, avatar: string) {
+    const dto = new RegisterRequestWithImgURLDTO();
+    dto.avatar = avatar;
+    dto.name = name;
+    dto.email = email;
+    dto.password = password;
+
+    return dto;
+  }
+}

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '#/guard/jwt.guard';
@@ -10,7 +10,7 @@ import { BaseResponse } from '#/response/base';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/update')
+  @Patch('/update')
   @UseGuards(JwtGuard)
   @ApiBody({ type: UpdateDTO })
   @ApiBearerAuth()

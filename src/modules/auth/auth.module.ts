@@ -5,12 +5,14 @@ import { AuthRepository } from './auth.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+import { ImageModule } from '../image/image.module';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, AuthRepository],
   exports: [AuthService],
   imports: [
+    ImageModule,
     NestjsFormDataModule.config({ storage: MemoryStoredFile }),
     JwtModule.registerAsync({
       inject: [ConfigService],

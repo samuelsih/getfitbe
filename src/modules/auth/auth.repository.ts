@@ -1,7 +1,10 @@
 import { DB } from '#/tables';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectKysely } from 'nestjs-kysely';
-import { RegisterRequestDTO } from './dto/register.dto';
+import {
+  RegisterRequestDTO,
+  RegisterRequestWithImgURLDTO,
+} from './dto/register.dto';
 import { sql } from 'kysely';
 import { AlreadyExistsError } from '#/exception/alreadyExists.error';
 import { LoginRequestDTO } from './dto/login.dto';
@@ -16,7 +19,14 @@ export class AuthRepository {
     @InjectKysely() private readonly db: DB,
   ) {}
 
-  async addUser(dto: RegisterRequestDTO) {
+  async addUser(
+    dto: RegisterRequestDTO | RegisterRequestWithImgURLDTO,
+    withImg: boolean = false,
+  ) {
+    if (withImg) {
+      return this.addUserWithImg(dto as RegisterRequestWithImgURLDTO);
+    }
+
     try {
       const result = await this.db
         .insertInto('users')
@@ -25,6 +35,43 @@ export class AuthRepository {
           email: dto.email,
           password: sql`crypt(${dto.password}, gen_salt('bf'))`,
           role: 'USER',
+        })
+        .returning([
+          'id',
+          'name',
+          'email',
+          'image',
+          'email_verified as emailVerified',
+          'role',
+          'created_at as createdAt',
+          'updated_at as updatedAt',
+        ])
+        .executeTakeFirstOrThrow();
+
+      this.logger.debug({ mode: 'repository.addUser', data: result });
+
+      return result;
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('unique constraint')) {
+          throw new AlreadyExistsError('email');
+        }
+      }
+
+      throw error;
+    }
+  }
+
+  private async addUserWithImg(dto: RegisterRequestWithImgURLDTO) {
+    try {
+      const result = await this.db
+        .insertInto('users')
+        .values({
+          name: dto.name,
+          email: dto.email,
+          password: sql`crypt(${dto.password}, gen_salt('bf'))`,
+          role: 'USER',
+          image: dto.avatar,
         })
         .returning([
           'id',
