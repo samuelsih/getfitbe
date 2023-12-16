@@ -44,8 +44,6 @@ export class JwtGuard implements CanActivate {
         issuer: this.configService.get('JWT_ISSUER'),
       });
 
-      this.logger.debug({ payload });
-
       if (!payload) {
         throw new UnauthorizedException();
       }

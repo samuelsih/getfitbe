@@ -59,6 +59,9 @@ export class ImageController {
   @ApiQuery({ name: 'page', example: 1 })
   async findAll(@Req() request: Request, @Query('page') page: number = 1) {
     const result = await this.imageService.getAll(request.user.id, page);
-    return new BaseResponse(200, 'OK', result);
+    return new BaseResponse(200, 'OK', {
+      newestImg: result.lastImg,
+      imgs: result.result,
+    });
   }
 }
