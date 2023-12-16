@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsAlpha,
-  IsAlphanumeric,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsAlpha, IsOptional, IsString, Length } from 'class-validator';
 
 export class UpdateDTO {
   @IsOptional()
@@ -17,7 +11,6 @@ export class UpdateDTO {
 
   @IsOptional()
   @IsString()
-  @IsAlphanumeric()
   @Length(4)
   @ApiProperty({ example: 'Satpol' })
   bio: string;
