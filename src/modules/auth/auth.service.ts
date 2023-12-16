@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async registerUser(dto: RegisterRequestDTO, bucketName: string) {
-    if (dto.avatar.size === 0) {
+    if (!dto.avatar) {
       const result = await this.repo.addUser(dto);
       return result;
     }
