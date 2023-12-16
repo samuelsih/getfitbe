@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsAlpha,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -17,7 +16,6 @@ import {
 export class RegisterRequestDTO {
   @IsString()
   @IsNotEmpty()
-  @IsAlpha()
   @Length(4)
   @ApiProperty({ example: 'Seseorang' })
   name: string;
