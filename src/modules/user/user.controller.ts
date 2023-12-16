@@ -1,4 +1,13 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '#/guard/jwt.guard';
@@ -7,6 +16,8 @@ import { BaseResponse } from '#/response/base';
 import { FormDataRequest } from 'nestjs-form-data';
 import { RegisterTrainerDTO } from './dto/trainer.dto';
 import { ConfigService } from '@nestjs/config';
+import { Role, RolesGuard } from '#/guard/role.guard';
+import { JWTRole } from '#/decorator/roles.decorator';
 
 @Controller('user')
 @ApiTags('user')
@@ -41,6 +52,24 @@ export class UserController {
     const bucketName = this.configService.get('MINIO_BUCKET_PROFILE_IMG');
     const result = await this.userService.addTrainer(dto, bucketName);
     await this.userService.addConversation(result.id);
+    return new BaseResponse(200, 'OK', result);
+  }
+
+  @Get('user/all')
+  @JWTRole(Role.Trainer)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  async getAllUser() {
+    const result = await this.userService.all();
+    return new BaseResponse(200, 'OK', result);
+  }
+
+  @Get('user/:userID')
+  @JWTRole(Role.Trainer)
+  @UseGuards(JwtGuard, RolesGuard)
+  @ApiBearerAuth()
+  async getDetailUser(@Param('userID') userID: string) {
+    const result = await this.userService.detailUser(userID);
     return new BaseResponse(200, 'OK', result);
   }
 }

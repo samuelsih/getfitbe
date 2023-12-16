@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -59,6 +60,22 @@ export class ImageController {
   @ApiQuery({ name: 'page', example: 1 })
   async findAll(@Req() request: Request, @Query('page') page: number = 1) {
     const result = await this.imageService.getAll(request.user.id, page);
+    return new BaseResponse(200, 'OK', {
+      count: result.count.countImg,
+      imgs: result.result,
+    });
+  }
+
+  @JWTRole(Role.Trainer)
+  @UseGuards(JwtGuard, RolesGuard)
+  @Get('/list/:userID')
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'page', example: 1 })
+  async findAllByID(
+    @Query('page') page: number = 1,
+    @Param('userID') userID: string,
+  ) {
+    const result = await this.imageService.getAll(userID, page);
     return new BaseResponse(200, 'OK', {
       count: result.count.countImg,
       imgs: result.result,

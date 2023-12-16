@@ -42,9 +42,6 @@ export class ImageService {
 
   async getAll(userID: string, page: number) {
     const data = await this.repo.all(userID, page);
-    data.result.map(d => {
-      
-    })
     return data;
   }
 }

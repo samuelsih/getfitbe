@@ -148,4 +148,34 @@ export class UserRepository {
       WHERE users.role = 'USER'
     `.execute(this.db);
   }
+
+  async allUsers() {
+    const result = await this.db
+      .selectFrom('users')
+      .select(['id', 'name', 'image', 'bio'])
+      .where('role', '=', 'USER')
+      .execute();
+
+    return result;
+  }
+
+  async detailUser(userID: string) {
+    const result = await this.db
+      .selectFrom('users')
+      .select([
+        'id',
+        'name',
+        'email',
+        'image',
+        'email_verified as emailVerified',
+        'role',
+        'created_at as createdAt',
+        'updated_at as updatedAt',
+      ])
+      .where('role', '=', 'USER')
+      .where('id', '=', userID)
+      .executeTakeFirst();
+
+    return result;
+  }
 }

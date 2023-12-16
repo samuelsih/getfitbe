@@ -46,4 +46,14 @@ export class UserService {
   async addConversation(trainerID: string) {
     await this.repo.addConversation(trainerID);
   }
+
+  async all() {
+    const result = await this.repo.allUsers();
+    return result;
+  }
+
+  async detailUser(userID: string) {
+    const result = await this.repo.detailUser(userID);
+    return result;
+  }
 }
