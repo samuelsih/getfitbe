@@ -16,6 +16,7 @@ export class ImageRepository {
     const count = await this.db
       .selectFrom('user_upload_img')
       .select((eb) => eb.fn.count('id').as('countImg'))
+      .where('user_id', '=', userID)
       .executeTakeFirst();
 
     const allImgs = await this.db
